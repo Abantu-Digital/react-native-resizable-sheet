@@ -13,7 +13,7 @@ const LINKING_ERROR =
 
 type ResizableSheetProps = {
   color: string;
-  style: ViewStyle;
+  style?: ViewStyle;
 };
 
 const ComponentName = 'ResizableSheetView';

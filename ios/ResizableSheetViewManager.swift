@@ -1,36 +1,58 @@
+import SwiftUI
+@available(iOS 16.0, *)
 @objc(ResizableSheetViewManager)
-class ResizableSheetViewManager: RCTViewManager {
+class ResizableSheetViewManager: RCTViewManager, UISheetPresentationControllerDelegate {
+    
 
-  override func view() -> (ResizableSheetView) {
-    return ResizableSheetView()
-  }
+
+    override func view() -> UIView! {
+        if let window = UIApplication.shared.windows.first {
+            if let rootViewController = window.rootViewController {
+                // Do something with the root view controller
+                
+                
+                let myViewController = UIViewController()
+                // Customize the view controller as needed
+                myViewController.view.backgroundColor = UIColor.green
+                myViewController.title = "My Sheet"
+                myViewController.modalPresentationStyle = .pageSheet
+    
+                
+                let sheetPresentationController = myViewController.presentationController as? UISheetPresentationController
+                sheetPresentationController?.delegate = self // set delegate if necessary
+                sheetPresentationController?.detents = [.medium(), .large(), .custom(resolver: { context in
+                    return 200
+                })];
+                sheetPresentationController?.prefersGrabberVisible = true;
+                
+                
+
+                
+                rootViewController.present(myViewController, animated: true)
+            }
+        }
+        
+        
+        
+        
+        
+        return UIView()
+    }
+    @objc func toggleSheet() {
+        
+        
+        
+
+        
+        
+        
+    }
 
   @objc override static func requiresMainQueueSetup() -> Bool {
-    return false
+    return true
   }
 }
 
-class ResizableSheetView : UIView {
 
-  @objc var color: String = "" {
-    didSet {
-      self.backgroundColor = hexStringToUIColor(hexColor: color)
-    }
-  }
 
-  func hexStringToUIColor(hexColor: String) -> UIColor {
-    let stringScanner = Scanner(string: hexColor)
 
-    if(hexColor.hasPrefix("#")) {
-      stringScanner.scanLocation = 1
-    }
-    var color: UInt32 = 0
-    stringScanner.scanHexInt32(&color)
-
-    let r = CGFloat(Int(color >> 16) & 0x000000FF)
-    let g = CGFloat(Int(color >> 8) & 0x000000FF)
-    let b = CGFloat(Int(color) & 0x000000FF)
-
-    return UIColor(red: r / 255.0, green: g / 255.0, blue: b / 255.0, alpha: 1)
-  }
-}
